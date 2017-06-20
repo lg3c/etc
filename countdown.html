@@ -1,0 +1,103 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>it's the final countdown</title>
+    <style>
+        body{
+            text-align: center;
+            background: #000000;
+            font-family: 'Segoe UI', sans-serif;
+            font-weight: 100;
+        }        
+
+        div{
+            font-family: 'Segoe UI', sans-serif;            
+            color: #fff;            
+            font-weight: 100;
+            text-align: center;
+            font-size: 100px;
+        }        
+    </style>
+</head>
+<body>   
+    <script>
+        function getTimeRemaining(endtime) {
+            var t = Date.parse(endtime) - Date.parse(new Date());
+            var seconds = Math.floor((t / 1000) % 60);
+            var minutes = Math.floor((t / 1000 / 60) % 60);
+            var hours = Math.floor((t / (1000 * 60 * 60)) % 24);
+            var days = Math.floor(t / (1000 * 60 * 60 * 24));
+            return {
+                'total': t,
+                'days': days,
+                'hours': hours,
+                'minutes': minutes,
+                'seconds': seconds
+            };
+        }
+
+        function initializeClock(id, endtime) {
+            var clock = document.getElementById(id);                        
+            var daysSpan = clock.querySelector('.days');
+            var hoursSpan = clock.querySelector('.hours');
+            var minutesSpan = clock.querySelector('.minutes');
+            var secondsSpan = clock.querySelector('.seconds');
+
+            function updateClock() {
+                var t = getTimeRemaining(endtime);                
+                daysSpan.innerHTML = ('0' + t.days).slice(-3) + 'd ';                
+                hoursSpan.innerHTML = ('0' + t.hours).slice(-2) + 'h ';                
+                minutesSpan.innerHTML = ('0' + t.minutes).slice(-2) + 'm ';                
+                secondsSpan.innerHTML = ('0' + t.seconds).slice(-2) + 's';                
+            }
+
+            updateClock(); // run function once at first to avoid delay
+            var timeinterval = setInterval(updateClock, 1000);
+        }      
+        
+        var events = [            
+            { title: "30th bday", due: 'July 1 2017 05:00:00', mandatory: true },			
+        ];                
+
+        var timezone = ' GMT-02:00';
+        for (i = 0; i < events.length; i++) {
+            var localEvent = events[i];
+            localEvent.due += timezone;
+
+            if (Date.parse(localEvent.due) > Date.parse(new Date())) {
+                var div = document.createElement("div");                
+                div.id = localEvent.title;
+                if (!localEvent.mandatory) {
+                    div.style.color = "#2b2b2b";
+                }
+                document.body.appendChild(div);
+
+                var span = document.createElement("span");
+                span.innerHTML = localEvent.title + "<br>";
+                span.style.fontWeight = "600";
+                div.appendChild(span);
+
+                var span = document.createElement("span");
+                span.className = "days";
+                div.appendChild(span);                
+
+                var span = document.createElement("span");
+                span.className = "hours";
+                div.appendChild(span);
+
+                var span = document.createElement("span");
+                span.className = "minutes";
+                div.appendChild(span);
+
+                var span = document.createElement("span");
+                span.className = "seconds";
+                div.appendChild(span);
+
+                initializeClock(localEvent.title, localEvent.due);
+            }
+        }        
+    </script>
+</body>
+</html>
